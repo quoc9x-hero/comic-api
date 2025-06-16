@@ -1,4 +1,5 @@
 import { getListMangaByTag, getPaginate } from "@/lib/manga";
+import { getCachedData } from "@/lib/upstash";
 import { NextRequest, NextResponse } from "next/server";
 
 interface Params {
@@ -18,17 +19,29 @@ export async function GET(
     const pagePlanText = request.nextUrl.searchParams.get("page");
     const page: number = pagePlanText ? parseInt(pagePlanText) : 1;
 
-    const paginate = await getPaginate(page);
-    if ((paginate.lastPage && page > paginate.lastPage) || page < 1 || !page) {
-      throw new Error("The page is invalid!");
-    }
+    const data = await getCachedData(
+      "manga-list-by-tag",
+      { slug: promiseParams.slug, page },
+      async () => {
+        const paginate = await getPaginate(page);
+        if (
+          (paginate.lastPage && page > paginate.lastPage) ||
+          page < 1 ||
+          !page
+        ) {
+          throw new Error("The page is invalid!");
+        }
 
-    const data = await getListMangaByTag(promiseParams.slug, page);
+        const data = await getListMangaByTag(promiseParams.slug, page);
 
-    return NextResponse.json({
-      data,
-      paginate,
-    });
+        return {
+          data,
+          paginate,
+        };
+      }
+    );
+
+    return NextResponse.json(data);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json(

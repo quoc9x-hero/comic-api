@@ -1,4 +1,5 @@
 import { getChapterDetail } from "@/lib/manga";
+import { getCachedData } from "@/lib/upstash";
 import { NextRequest, NextResponse } from "next/server";
 
 interface Params {
@@ -12,10 +13,22 @@ export async function GET(
 ) {
   try {
     const parseParams = await params;
-    const data = await getChapterDetail(parseParams.slug, parseParams.chapter);
-    if (!data) {
-      throw new Error("Data not found");
-    }
+
+    const data = await getCachedData(
+      "manga-chapter-list",
+      parseParams,
+      async () => {
+        const data = await getChapterDetail(
+          parseParams.slug,
+          parseParams.chapter
+        );
+        if (!data) {
+          throw new Error("Data not found");
+        }
+
+        return data;
+      }
+    );
 
     return NextResponse.json(data, {
       status: 200,

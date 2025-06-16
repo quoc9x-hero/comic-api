@@ -8,6 +8,8 @@
 - Search manga by title or genre
 - View manga details and chapter list
 - Read manga with an interface optimized for both desktop and mobile
+- [x] Apply **Upstash** for caching API responses
+- [x] Integrate **Swagger** for API documentation
 
 ## API Endpoints
 

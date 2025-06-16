@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     if (!response?.contentType) {
       throw new Error("Content-Type not found.");
     }
+
     return new Response(response.data, {
       headers: {
         "Content-Type": response.contentType,
