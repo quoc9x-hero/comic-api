@@ -6,7 +6,10 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-function generateCacheKey(group: string, params: Record<string, any>) {
+function generateCacheKey(
+  group: string,
+  params: Record<string, string | number | string[] | number[]>
+) {
   const sortedParams = Object.fromEntries(
     Object.entries(params).sort(([a], [b]) => a.localeCompare(b))
   );
@@ -19,7 +22,7 @@ type FetchFn<T> = () => Promise<T>;
 
 export async function getCachedData<T>(
   group: string,
-  params: Record<string, any>,
+  params: Record<string, string | number | string[] | number[]>,
   fetchFn: FetchFn<T>,
   ttl = 86400 // 1 day in seconds
 ): Promise<T> {

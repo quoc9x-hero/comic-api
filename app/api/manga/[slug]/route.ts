@@ -6,10 +6,7 @@ interface Params {
   slug: string;
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Params }
-) {
+export async function GET(_: NextRequest, { params }: { params: Params }) {
   try {
     const promiseParams = await params;
     if (!promiseParams.slug) {
@@ -18,7 +15,7 @@ export async function GET(
 
     const data = await getCachedData(
       "manga-detail",
-      promiseParams,
+      { ...promiseParams },
       async () => {
         const data = await getManaDetail(promiseParams.slug);
         if (!data) {

@@ -113,7 +113,7 @@ export interface Category {
 export const getListManga = async (
   page: number = 1
 ): Promise<Array<MangaItem>> => {
-  let result: Array<MangaItem> = [];
+  const result: Array<MangaItem> = [];
   try {
     const response = await axios.get(`${baseUrl}/?page=${page}`, {
       headers,
@@ -129,7 +129,7 @@ export const getListManga = async (
       const originalName = tooltip?.find(".title").text()?.trim();
       const description = tooltip?.find(".box_text").text()?.trim();
 
-      let chapters: ChapterItem[] = [];
+      const chapters: ChapterItem[] = [];
       item.find(".chapter.clearfix").each((index, chapterElement) => {
         const chapterItem = $(chapterElement);
         const id = chapterItem.find("a").attr("data-id");
@@ -152,8 +152,8 @@ export const getListManga = async (
         chapters,
       });
     });
-  } catch (error: any) {
-    console.log("Error:", error.message);
+  } catch (error) {
+    console.log("Error:", error);
   }
   return result;
 };
@@ -162,7 +162,7 @@ export const getListMangaByCat = async (
   categorySlug: string,
   page: number = 1
 ): Promise<Array<MangaItem>> => {
-  let result: Array<MangaItem> = [];
+  const result: Array<MangaItem> = [];
   try {
     const response = await axios.get(
       `${baseUrl}/tim-truyen/${categorySlug}?page=${page}`,
@@ -181,7 +181,7 @@ export const getListMangaByCat = async (
       const originalName = tooltip?.find(".title").text()?.trim();
       const description = tooltip?.find(".box_text").text()?.trim();
 
-      let chapters: ChapterItem[] = [];
+      const chapters: ChapterItem[] = [];
       item.find(".chapter.clearfix").each((index, chapterElement) => {
         const chapterItem = $(chapterElement);
         const id = chapterItem.find("a").attr("data-id");
@@ -204,8 +204,8 @@ export const getListMangaByCat = async (
         chapters,
       });
     });
-  } catch (error: any) {
-    console.log("Error:", error.message);
+  } catch (error) {
+    console.log("Error:", error);
   }
   return result;
 };
@@ -214,7 +214,7 @@ export const getListMangaByTag = async (
   tagSlug: string,
   page: number = 1
 ): Promise<Array<MangaItem>> => {
-  let result: Array<MangaItem> = [];
+  const result: Array<MangaItem> = [];
   try {
     const response = await axios.get(`${baseUrl}/tag/${tagSlug}?page=${page}`, {
       headers,
@@ -230,7 +230,7 @@ export const getListMangaByTag = async (
       const originalName = tooltip?.find(".title").text()?.trim();
       const description = tooltip?.find(".box_text").text()?.trim();
 
-      let chapters: ChapterItem[] = [];
+      const chapters: ChapterItem[] = [];
       item.find(".chapter.clearfix").each((index, chapterElement) => {
         const chapterItem = $(chapterElement);
         const id = chapterItem.find("a").attr("data-id");
@@ -253,8 +253,8 @@ export const getListMangaByTag = async (
         chapters,
       });
     });
-  } catch (error: any) {
-    console.log("Error:", error.message);
+  } catch (error) {
+    console.log("Error:", error);
   }
   return result;
 };
@@ -263,7 +263,7 @@ export const getListMangaInSearch = async (
   page: number = 1,
   keyword: string
 ): Promise<Array<MangaItem>> => {
-  let result: Array<MangaItem> = [];
+  const result: Array<MangaItem> = [];
   try {
     const response = await axios.get(
       `${baseUrl}/tim-truyen/?page=${page}&keyword=${keyword}`,
@@ -282,7 +282,7 @@ export const getListMangaInSearch = async (
       const originalName = tooltip?.find(".title").text()?.trim();
       const description = tooltip?.find(".box_text").text()?.trim();
 
-      let chapters: ChapterItem[] = [];
+      const chapters: ChapterItem[] = [];
       item.find(".chapter.clearfix").each((index, chapterElement) => {
         const chapterItem = $(chapterElement);
         const id = chapterItem.find("a").attr("data-id");
@@ -305,8 +305,8 @@ export const getListMangaInSearch = async (
         chapters,
       });
     });
-  } catch (error: any) {
-    console.log("Error:", error.message);
+  } catch (error) {
+    console.log("Error:", error);
   }
   return result;
 };
@@ -318,7 +318,7 @@ export const getListCategory = async (): Promise<Category[]> => {
     });
     const $ = cheerio.load(response.data);
 
-    let categories: Category[] = [];
+    const categories: Category[] = [];
     $(".main-menu .dropdown-menu.megamenu .clearfix li").each(
       (index, element) => {
         const item = $(element).find("a");
@@ -477,6 +477,7 @@ export const fetchRealImage = async (
       contentLength,
     };
   } catch (error) {
+    console.log("Error: ", error);
     return null;
   }
 };
@@ -499,9 +500,9 @@ export const getManaDetail = async (
 
     const authorPlanText =
       $(".list-info .author.row .col-xs-8")?.text().trim() ?? "";
-    let authors: string[] = authorPlanText.split(", ");
+    const authors: string[] = authorPlanText.split(", ");
 
-    let categories: Category[] = [];
+    const categories: Category[] = [];
     $(".list-info .kind.row .col-xs-8 a").each((index, element) => {
       const item = $(element);
       const url = item?.attr("href") ?? "";
@@ -538,7 +539,7 @@ export const getManaDetail = async (
       }
     );
     const listChapters = chapterResponse.data.data as ChapterInResponse[];
-    let chapters: ChapterItem[] = [];
+    const chapters: ChapterItem[] = [];
     for (const chapter of listChapters) {
       chapters.push({
         id: chapter.chapter_id,
@@ -588,14 +589,14 @@ export const getChapterDetail = async (
       throw new Error("Slug is invalid!");
     }
 
-    let servers: Server[] = [];
+    const servers: Server[] = [];
     $("[data-server]").each((index, element) => {
       const item = $(element);
       const id = item.attr("data-server");
       const name = item.text()?.trim() ?? "";
       const slug = "sv" + id;
 
-      let images: Image[] = [];
+      const images: Image[] = [];
       $(".page-chapter img").each((index, element) => {
         const image = $(element).attr("data-" + slug) ?? "";
         images.push({

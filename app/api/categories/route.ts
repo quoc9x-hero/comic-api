@@ -1,8 +1,8 @@
 import { getListCategory } from "@/lib/manga";
 import { getCachedData } from "@/lib/upstash";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const data = await getCachedData("categories", {}, async () => {
       return await getListCategory();

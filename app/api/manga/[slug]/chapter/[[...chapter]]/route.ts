@@ -16,7 +16,7 @@ export async function GET(
 
     const data = await getCachedData(
       "manga-chapter-list",
-      parseParams,
+      { ...parseParams },
       async () => {
         const data = await getChapterDetail(
           parseParams.slug,
