@@ -1,4 +1,5 @@
 import { getListMangaInSearch, getPaginate } from "@/lib/manga";
+import { getCachedData } from "@/lib/upstash";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -7,17 +8,29 @@ export async function GET(request: NextRequest) {
     const keyword = request.nextUrl.searchParams.get("q") ?? "";
     const page: number = pagePlanText ? parseInt(pagePlanText) : 1;
 
-    const paginate = await getPaginate(page, !!keyword ? keyword : null);
-    if ((paginate.lastPage && page > paginate.lastPage) || page < 1 || !page) {
-      throw new Error("The page is invalid!");
-    }
+    const data = await getCachedData(
+      "manga-list-search",
+      { keyword, page },
+      async () => {
+        const paginate = await getPaginate(page, !!keyword ? keyword : null);
+        if (
+          (paginate.lastPage && page > paginate.lastPage) ||
+          page < 1 ||
+          !page
+        ) {
+          throw new Error("The page is invalid!");
+        }
 
-    const data = await getListMangaInSearch(page, keyword);
+        const data = await getListMangaInSearch(page, keyword);
 
-    return NextResponse.json({
-      data,
-      paginate,
-    });
+        return {
+          data,
+          paginate,
+        };
+      }
+    );
+
+    return NextResponse.json(data);
   } catch (error: unknown) {
     if (error instanceof Error) {
       return NextResponse.json(
