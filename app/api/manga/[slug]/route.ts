@@ -6,7 +6,10 @@ interface Params {
   slug: string;
 }
 
-export async function GET(_: NextRequest, { params }: { params: Params }) {
+export async function GET(
+  _: NextRequest,
+  { params }: { params: Promise<Params> }
+) {
   try {
     const promiseParams = await params;
     if (!promiseParams.slug) {

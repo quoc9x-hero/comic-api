@@ -8,10 +8,10 @@ interface Params {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Params }
+  context: { params: Promise<Params> }
 ) {
   try {
-    const promiseParams = await params;
+    const promiseParams = await context.params;
     if (!promiseParams.slug) {
       throw new Error("The slug is invalid!");
     }
