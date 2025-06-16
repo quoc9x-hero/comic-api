@@ -106,7 +106,7 @@ export interface Image {
 
 export interface Category {
   name: string;
-  description: string;
+  description?: string;
   url: string;
 }
 
